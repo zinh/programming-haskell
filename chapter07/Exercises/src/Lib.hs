@@ -1,7 +1,7 @@
 module Lib
     ( someFunc,
     all, any, takeWhile,
-    altMap
+    altMap, unfold
     ) where
 
 import Prelude hiding (all, any, takeWhile)
@@ -36,6 +36,15 @@ map f xs = foldr (\x memo -> f x : memo) [] xs
 
 filter :: (a -> Bool) -> [a] -> [a]
 filter f xs = foldr (\x memo -> if f x then x : memo else memo) [] xs
+
+--- Ex 6
+--unfold :: (b -> Bool) -> (a -> b) -> (a -> b) -> a -> [b]
+unfold p h t x
+  | p x = []
+  | otherwise = h x : unfold p h t (t x)
+
+chop8 = unfold (==[]) (take 8) (drop 8)
+-- map' f = unfold (==[]) f tail
 
 -- Ex 9
 altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
