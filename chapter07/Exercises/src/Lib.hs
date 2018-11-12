@@ -1,9 +1,9 @@
 module Lib
     ( someFunc,
-    all, any, takeWhile
+    all, any, takeWhile, dec2int, curry', uncurry'
     ) where
 
-import Prelude hiding (all, any, takeWhile)
+import Prelude hiding (all, any, takeWhile, dropWhile)
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
@@ -35,3 +35,16 @@ map f xs = foldr (\x memo -> f x : memo) [] xs
 
 filter :: (a -> Bool) -> [a] -> [a]
 filter f xs = foldr (\x memo -> if f x then x : memo else memo) [] xs
+
+dec2int :: [Int] -> Int
+dec2int = foldl (\memo digit -> digit + 10*memo) 0
+
+curry' :: ((a, b) -> c) -> a -> b -> c
+curry' f = \a b -> f (a, b)
+
+uncurry' :: (a -> b -> c) -> (a, b) -> c
+uncurry' f = \(a, b) -> f a b
+
+unfold' p h t x
+  | p x = []
+  | otherwise = h x : unfold' p h t (t x)
