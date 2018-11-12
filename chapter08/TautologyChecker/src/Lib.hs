@@ -11,6 +11,8 @@ data Prop = Const Bool
           | Not Prop
           | And Prop Prop
           | Imply Prop Prop
+          | Disjunc Prop Prop
+          | Equiv Prop Prop
 
 type Subt = Assoc Char Bool
 
@@ -23,6 +25,11 @@ eval s (Var x) = find x s
 eval s (Not p) = not (eval s p)
 eval s (And p1 p2) = (eval s p1) && (eval s p2)
 eval s (Imply p1 p2) = (eval s p1) <= (eval s p2)
+eval s (Disjunc p1 p2) = (eval s p1) || (eval s p2)
+eval s (Equiv p1 p2) =
+  let p1Val = eval s p1
+      p2Val = eval s p2
+   in (p1Val && p2Val) || (not p1Val && not p2Val)
 
 vars :: Prop -> [Char]
 vars (Const _) = []
