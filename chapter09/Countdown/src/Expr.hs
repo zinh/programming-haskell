@@ -1,4 +1,4 @@
-module Expr(Expr(..), eval) where
+module Expr(Expr(..), eval, values) where
 
 import Op (Op, apply, valid)
 
@@ -11,6 +11,7 @@ instance Show Expr where
           bracket e = "(" ++ show e ++ ")"
 
 
+-- Return list of Val
 values :: Expr -> [Int]
 values (Val n) = [n]
 values (App _ e1 e2) = values e1 ++ values e2
