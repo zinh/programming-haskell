@@ -46,7 +46,6 @@ goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
 
 showcells :: Board -> IO ()
 showcells board = do
-  cls
   sequence_ [if (x, y) `elem` board then writeat (x, y) "O" else writeat (x, y) "." | x <- [0..(width - 1)], y <- [0..(height -1)]]
 
 run :: Int -> Int -> Board -> IO ()
