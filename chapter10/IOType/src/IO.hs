@@ -34,3 +34,7 @@ strlen = do
   putStr "Enter a string: "
   xs <- getLine
   putStrLn ("The length is: " ++ show (length xs))
+
+-- Clear screen
+cls :: IO ()
+cls = putStr "\ESC[2J"
