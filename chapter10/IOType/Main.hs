@@ -4,5 +4,4 @@ import Exercise
 
 main :: IO ()
 main = do
-  str <- readLine'
-  print str
+  getLine'
