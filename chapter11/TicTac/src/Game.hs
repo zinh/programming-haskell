@@ -26,13 +26,21 @@ turn g = if countX > countO then O else X
         countO = length (filter (==O) gs)
 
 wins :: Player -> Grid -> Bool
-wins = error "not implemented"
+wins player gs = win' gs || win' (transpose gs)
+  where rowFilled = all (== player)
+        win' gss = any rowFilled gss || rowFilled (diag gss)
 
 diag :: Grid -> [Player]
 diag gs = [row !! idx | (row, idx) <- zip gs [0..]]
 
-won :: Grid -> Player
-won gs = wins O gs || wins X gs
+transpose :: Grid -> Grid
+transpose [] = []
+transpose gs@(g:_) = foldr appendRow (replicate (length g) []) gs
+  where appendRow (cell:row) (r:rs) = (r ++ [cell]) : (appendRow row rs)
+        appendRow [] memo = memo
+
+won :: Grid -> Bool
+won gs = wins X gs || wins O gs
 
 putGrid :: Grid -> IO ()
 putGrid = sequence_ . map putRow
@@ -48,7 +56,7 @@ valid :: Grid -> Int -> Bool
 valid gs i =
   let rowNo = i `div` size
       colNo = i `mod` size
-   in gs !! rowNo !! colNo == B
+   in rowNo < size && (gs !! rowNo !! colNo == B)
 
 move :: Grid -> Int -> Player -> [Grid]
 move gs pos p
@@ -57,14 +65,30 @@ move gs pos p
 
 -- make a move
 makeMove :: Grid -> Int -> Player -> Grid
-makeMove = error "not implemented"
+makeMove gs pos p =
+  let rowNo = pos `div` size
+      colNo = pos `mod` size
+      row = gs !! rowNo
+      updatedRow = (take colNo row) ++ [p] ++ (drop (colNo + 1) row)
+   in (take rowNo gs) ++ [updatedRow] ++ (drop (rowNo + 1) gs)
 
--- getNat
 getNat :: IO Int
-getNat = error "not implemented"
+getNat = do
+  n <- getLine
+  return (read n :: Int)
 
 tictactoe :: IO ()
-tictactoe = error "not implemented"
+tictactoe = run empty O
 
 run :: Grid -> Player -> IO ()
-run = error "not implemented"
+run gs p = do
+  putGrid gs
+  putStr ("Player " ++ (show p) ++ ": ")
+  pos <- getNat
+  case move gs pos p of
+    [] -> do putStrLn "Invalid move. Try again"
+             run gs p
+    [g'] -> if won g' then
+                        putStrLn (show p ++ " won")
+                      else
+                        run g' (next p)
