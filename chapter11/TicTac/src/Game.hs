@@ -1,7 +1,5 @@
 module Game where
 
-import Data.List (intercalate)
-
 data Player = O | B | X deriving (Eq, Show, Ord)
 
 type Grid = [[Player]]
@@ -42,11 +40,6 @@ transpose gs@(g:_) = foldr appendRow (replicate (length g) []) gs
 won :: Grid -> Bool
 won gs = wins X gs || wins O gs
 
-putGrid :: Grid -> IO ()
-putGrid = sequence_ . map putRow
-
-putRow :: [Player] -> IO ()
-putRow = putStrLn . intercalate " | " . map showPlayer
 
 showPlayer :: Player -> String
 showPlayer B = " "
@@ -72,23 +65,3 @@ makeMove gs pos p =
       updatedRow = (take colNo row) ++ [p] ++ (drop (colNo + 1) row)
    in (take rowNo gs) ++ [updatedRow] ++ (drop (rowNo + 1) gs)
 
-getNat :: IO Int
-getNat = do
-  n <- getLine
-  return (read n :: Int)
-
-tictactoe :: IO ()
-tictactoe = run empty O
-
-run :: Grid -> Player -> IO ()
-run gs p = do
-  putGrid gs
-  putStr ("Player " ++ (show p) ++ ": ")
-  pos <- getNat
-  case move gs pos p of
-    [] -> do putStrLn "Invalid move. Try again"
-             run gs p
-    [g'] -> if won g' then
-                        putStrLn (show p ++ " won")
-                      else
-                        run g' (next p)
