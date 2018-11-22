@@ -9,7 +9,7 @@ hangman = do
   putStrLn "Try to guess it"
   play word
 
-sgetLine :: IO (String)
+sgetLine :: IO String
 sgetLine = do
   x <- getCh
   if x == '\n' then
