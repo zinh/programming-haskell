@@ -25,10 +25,8 @@ nextState board = [(x, y) | x <- [0..(width - 1)], y <- [0..(height - 1)], survi
 survive :: Board -> Pos -> Bool
 survive board pos@(x, y) = 
   let neighborCount = sum [1 | neighbor <- neighborCells pos, isAlive board neighbor]
-   in if isAlive board pos then
-                           if neighborCount >= 2 && neighborCount <= 3 then True else False
-      else
-        if neighborCount == 3 then True else False 
+   in if isAlive board pos then neighborCount >= 2 && neighborCount <= 3
+      else neighborCount == 3
           
 neighborCells :: Pos -> [Pos]
 neighborCells (x, y) = [(x + i, y + j) | i <- [0, 1, -1], 
@@ -45,13 +43,11 @@ goto :: Pos -> IO ()
 goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
 
 showcells :: Board -> IO ()
-showcells board = do
-  sequence_ [if (x, y) `elem` board then writeat (x, y) "O" else writeat (x, y) "." | x <- [0..(width - 1)], y <- [0..(height -1)]]
+showcells board = sequence_ [if (x, y) `elem` board then writeat (x, y) "O" else writeat (x, y) "." | x <- [0..(width - 1)], y <- [0..(height -1)]]
 
 run :: Int -> Int -> Board -> IO ()
-run loopCount delay board = do
-  if loopCount == 0 then 
-                      return () 
+run loopCount delay board = 
+  if loopCount == 0 then return () 
                     else
                       do
                         showcells board

@@ -3,7 +3,7 @@ module IO where
 import System.IO (hSetEcho, stdin)
 import Prelude hiding(getLine, putStr, putStrLn)
 
-getCh :: IO(Char)
+getCh :: IO Char
 getCh = do hSetEcho stdin False
            x <- getChar
            hSetEcho stdin True

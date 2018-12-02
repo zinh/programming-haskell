@@ -11,7 +11,7 @@ initial :: Board
 initial = [5, 4, 3, 2, 1]
 
 finished :: Board -> Bool
-finished rows = all (==0) rows
+finished = all (==0)
 
 valid :: Board -> Int -> Int -> Bool
 valid board row star = star <= board !! (row - 1)
@@ -27,12 +27,12 @@ putRow row star = do putStr (show row ++ ". ")
 putBoard :: Board -> IO()
 putBoard board =
   let boardIdx = zip board [1..]
-      putBoard' [] = do return ()
+      putBoard' [] = return ()
       putBoard' ((star, row):xs) = do putRow row star
                                       putBoard' xs
    in putBoard' boardIdx
 
-getDigit :: String -> IO (Int)
+getDigit :: String -> IO Int
 getDigit prompt = do putStr prompt
                      x <- getChar
                      newLine
@@ -56,7 +56,7 @@ play board player = do newLine
                        else
                          do newLine
                             putStr "Player "
-                            putStrLn (show player)
+                            print player
                             row <- getDigit "Enter a row number: "
                             star <- getDigit "Stars to remove: "
                             if valid board row star then
